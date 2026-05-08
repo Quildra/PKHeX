@@ -134,20 +134,20 @@ public record struct EncounterPossible9(EvoCriteria[] Chain, EncounterTypeGroup 
             case YieldState.StaticMight:
                 if (TryGetNext(Encounters9.Might))
                     return true;
-                Index = 0; goto case YieldState.StaticEnd;
+                Index = 0; State = YieldState.StaticEnd; goto case YieldState.StaticEnd;
             case YieldState.StaticEnd:
-                goto case YieldState.SlotStart;
+                State = YieldState.SlotStart; goto case YieldState.SlotStart;
 
             case YieldState.SlotStart:
                 if (!Flags.HasFlag(EncounterTypeGroup.Slot))
-                    goto case YieldState.Bred;
-                goto case YieldState.Slot;
+                { State = YieldState.Bred; goto case YieldState.Bred; }
+                State = YieldState.Slot; goto case YieldState.Slot;
             case YieldState.Slot:
                 if (TryGetNext<EncounterArea9, EncounterSlot9>(Encounters9.Slots))
                     return true;
-                goto case YieldState.SlotEnd;
+                State = YieldState.SlotEnd; goto case YieldState.SlotEnd;
             case YieldState.SlotEnd:
-                goto case YieldState.Bred;
+                State = YieldState.Bred; goto case YieldState.Bred;
 
             case YieldState.Bred:
                 if (!Flags.HasFlag(EncounterTypeGroup.Egg))
