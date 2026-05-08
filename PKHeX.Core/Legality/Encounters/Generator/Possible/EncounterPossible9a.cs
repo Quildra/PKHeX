@@ -67,17 +67,17 @@ public record struct EncounterPossible9a(EvoCriteria[] Chain, EncounterTypeGroup
 
             case YieldState.TradeStart:
                 if (!Flags.HasFlag(EncounterTypeGroup.Trade))
-                    goto case YieldState.StaticStart;
+                { State = YieldState.StaticStart; goto case YieldState.StaticStart; }
                 State = YieldState.Trade; goto case YieldState.Trade;
             case YieldState.Trade:
                 if (TryGetNext(Encounters9a.Trades))
                     return true;
-                Index = 0; goto case YieldState.StaticStart;
+                Index = 0; State = YieldState.StaticStart; goto case YieldState.StaticStart;
 
             case YieldState.StaticStart:
                 if (!Flags.HasFlag(EncounterTypeGroup.Static))
-                    goto case YieldState.SlotStart;
-                goto case YieldState.StaticCapture;
+                { State = YieldState.SlotStart; goto case YieldState.SlotStart; }
+                State = YieldState.StaticCapture; goto case YieldState.StaticCapture;
             case YieldState.StaticCapture:
                 if (TryGetNext(Encounters9a.Static))
                     return true;
@@ -85,13 +85,13 @@ public record struct EncounterPossible9a(EvoCriteria[] Chain, EncounterTypeGroup
             case YieldState.StaticGift:
                 if (TryGetNext(Encounters9a.Gifts))
                     return true;
-                Index = 0; goto case YieldState.StaticEnd;
+                Index = 0; State = YieldState.StaticEnd; goto case YieldState.StaticEnd;
             case YieldState.StaticEnd:
-                goto case YieldState.SlotStart;
+                State = YieldState.SlotStart; goto case YieldState.SlotStart;
 
             case YieldState.SlotStart:
                 if (!Flags.HasFlag(EncounterTypeGroup.Slot))
-                    goto case YieldState.End;
+                { State = YieldState.End; goto case YieldState.End; }
                 State = YieldState.Slot;
                 goto case YieldState.Slot;
             case YieldState.Slot:
@@ -102,9 +102,9 @@ public record struct EncounterPossible9a(EvoCriteria[] Chain, EncounterTypeGroup
             case YieldState.Hyperspace:
                 if (TryGetNext<EncounterArea9a, EncounterSlot9a>(Encounters9a.Hyperspace))
                     return true;
-                goto case YieldState.SlotEnd;
+                State = YieldState.SlotEnd; goto case YieldState.SlotEnd;
             case YieldState.SlotEnd:
-                goto case YieldState.End;
+                State = YieldState.End; goto case YieldState.End;
 
             case YieldState.End:
                 break;
