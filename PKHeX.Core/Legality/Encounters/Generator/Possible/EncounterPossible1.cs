@@ -100,6 +100,7 @@ public record struct EncounterPossible1(EvoCriteria[] Chain, EncounterTypeGroup 
             case YieldState.StaticYW:
                 if (TryGetNext(Encounters1.StaticYW))
                     return true;
+                Index = 0;
                 if (Version == GameVersion.YW)
                 { State = YieldState.StaticShared; goto case YieldState.StaticShared; }
                 State = YieldState.StaticRB; goto case YieldState.StaticRB;
